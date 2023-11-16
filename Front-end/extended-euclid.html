@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extended Euclidean Algorithm</title>
+    <link rel="icon" href="lock1.png" type="png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Extended Euclidean Algorithm</h1>
+    </header>
+
+<div class="main">
+
+    <form method="POST" class="button-container">
+        <label for="a">Enter first number (a):</label>
+        <input type="text" name="a" id="a" class="numbers-only" required><br>
+
+        <label for="b">Enter second number (b):</label>
+        <input type="text" name="b" id="b" class="numbers-only" required><br>
+
+        <input type="submit" value="Calculate" class="button">
+    </form>
+
+{% if result %}
+<div class="result-container">
+    <h3>Result:</h3>
+    <p>{{ result }}</p>
+</div>
+{% endif %}
+</div>
+
+
+<footer>
+    <p>Project by: Samer Saade - Charbel-Toumieh - Saadallah Itani - Ibrahim Harmoush</p>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const numberOnlyInputs = document.querySelectorAll('.numbers-only');
+
+  numberOnlyInputs.forEach(input => {
+    input.addEventListener('keypress', function(event) {
+      const regex = /[0-9]/;
+      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+      if (!regex.test(key)) {
+        event.preventDefault();
+        return false;
+      }
+    });
+
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+  });
+});
+
+</script>
+</body>
+</html>

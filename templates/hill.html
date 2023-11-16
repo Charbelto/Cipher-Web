@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hill Cipher</title>
+    <link rel="icon" href="static/images/lock1.png" type="png">
+    <link rel="stylesheet" type="text/css" href="static/css/styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Hill Cipher</h1>
+</header>
+
+<div class="main" style="margin-top: -25px;" >
+  <form method="POST" class="button-container">
+    <label>Matrix Elements (3x3):</label>
+    <table class="matrix-input">
+      <tr>
+        <td><input type="text" name="m11"></td>
+        <td><input type="text" name="m12"></td>
+        <td><input type="text" name="m13"></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="m21"></td>
+        <td><input type="text" name="m22"></td>
+        <td><input type="text" name="m23"></td>
+      </tr>
+      <tr>
+        <td><input type="text" name="m31"></td>
+        <td><input type="text" name="m32"></td>
+        <td><input type="text" name="m33"></td>
+      </tr>
+    </table>
+
+    <label for="plaintext">Plaintext (letters only):</label>
+    <input type="text" name="plaintext" id="plaintext" required><br>
+
+    <label for="operation">Operation:</label>
+    <select name="operation" id="operation">
+      <option value="encrypt">Encrypt</option>
+      <option value="decrypt">Decrypt</option> 
+    </select><br>
+
+    <input type="submit" value="Submit" class="button">
+  </form>
+
+  {% if result %}
+    <div class="result-container">
+      <h3>Result:</h3> 
+      <p>{{ result }}</p>
+    </div>
+  {% endif %}
+</div>
+
+<footer>
+    <p>Project by: Samer Saade - Charbel-Toumieh - Saadallah Itani - Ibrahim Harmoush</p>
+</footer>
+
+<script>
+    document.querySelectorAll('.matrix-input input[type="text"]').forEach(input => {
+  input.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, ''); // Only allow numbers
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const plaintextInput = document.getElementById('plaintext');
+
+  plaintextInput.addEventListener('keypress', function(event) {
+    const regex = /[a-zA-Z]/;
+    const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+    if (!regex.test(key)) {
+      event.preventDefault();
+      return false;
+    }
+  });
+
+  plaintextInput.addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z]/g, '');
+  });
+});
+</script>
+</body>
+</html>

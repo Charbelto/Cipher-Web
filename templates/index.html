@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classical Encryption Techniques</title>
+    <link rel="icon" href="static/images/lock1.png" type="png">
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Classical Encryption Techniques Platform</h1>
+    </header>
+
+    <main>
+        <div class="button-container" style="margin-top: 20px;">
+        <form action="{{url_for('affine')}}">
+            <button type=submit class="btn btn-primary">Affine Cipher</button>
+        </form>
+        <form action="{{url_for('monoalphabetic')}}">
+            <button onclick="location.href='monoalphabetic.html';">Mono-Alphabetic Cipher</button>
+        </form>
+        <form action="{{url_for('vigenere')}}">
+            <button onclick="location.href='vigenere.html';">Vigenère Cipher</button>
+        </form>
+        <form action="{{url_for('playfair')}}">
+            <button onclick="location.href='playfair.html';">Playfair Cipher</button>
+        </form>
+        <form action="{{url_for('hill')}}">
+            <button onclick="location.href='hill.html';">Hill Cipher</button>
+        </form>
+        <form action="{{url_for('extended_euclid')}}">
+            <button onclick="location.href='extended_euclid.html';">Extended Euclid Algorithm</button>
+        </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>Project by: Samer Saade - Charbel-Toumieh - Saadallah Itani - Ibrahim Harmoush</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vigenere Cipher</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" href="lock1.png" type="png">
+
+</head>
+<body>
+
+<header>
+    <h1>Vigenere Cipher</h1>
+</header>
+
+<div class="main">
+    <form method="POST" class="button-container">
+
+        
+        <label for="plaintext">Enter plaintext:</label>
+        <input type="text" name="plaintext" id="plaintext" class="letters-only" required><br>
+        
+        <label for="key">Enter key:</label>
+        <input type="text" name="key" id="key" class="letters-only" required><br>
+        <label for="operation">Select operation:</label>
+        <select name="operation" id="operation">
+            <option value="encrypt">Encrypt</option>
+            <option value="decrypt">Decrypt</option>
+        </select><br>
+        
+        <button type="submit" id="submit" disabled>Submit</button>
+        
+    </form>
+    
+    {% if result %}
+    <div class="result-container">
+        <h2>Result:</h2>
+        <p>{{ result }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<footer>
+    <p>Project by: Samer Saade - Charbel-Toumieh - Saadallah Itani - Ibrahim Harmoush</p>
+</footer>
+    <script>
+        document.getElementById('operation').addEventListener('change', function () {
+            var selectedOperation = this.value;
+            var submitButton = document.getElementById('submit');
+            if (selectedOperation === '' || document.getElementById('plaintext').value === '' || document.getElementById('key').value === '') {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        });
+
+        document.getElementById('plaintext').addEventListener('input', function () {
+            var selectedOperation = document.getElementById('operation').value;
+            var submitButton = document.getElementById('submit');
+            if (selectedOperation === '' || this.value === '' || document.getElementById('key').value === '') {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        });
+
+        document.getElementById('key').addEventListener('input', function () {
+            var selectedOperation = document.getElementById('operation').value;
+            var submitButton = document.getElementById('submit');
+            if (selectedOperation === '' || document.getElementById('plaintext').value === '' || this.value === '') {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+  const letterOnlyInputs = document.querySelectorAll('.letters-only');
+
+  letterOnlyInputs.forEach(input => {
+    input.addEventListener('keypress', function(event) {
+      const regex = /[a-zA-Z]/;
+      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+      if (!regex.test(key)) {
+        event.preventDefault();
+        return false;
+      }
+    });
+
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z]/g, '');
+    });
+  });
+});
+    </script>
+</body>
+</html>

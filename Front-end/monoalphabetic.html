@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Cipher Page</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">\
+    <link rel="icon" href="lock1.png" type="png">
+</head>
+<body>
+
+  <header>
+    <h1>Mono-Alphabetic Cipher</h1>
+</header>
+
+<div class="main">
+    <form method="POST" class="button-container">
+        <label for="plaintext">Plaintext (letters only):</label>
+        <input type="text" name="plaintext" id="plaintext" class="letters-only" required><br>
+
+        <label for="key">Key (26 letters):</label>
+        <input type="text" name="key" id="key" required pattern="[A-Za-z]{26}" title="Key must be 26 letters without repeating characters" class="letters-only"><br>
+
+        <label for="operation">Operation:</label>
+        <select name="operation" id="operation">
+            <option value="encrypt">Encrypt</option>
+            <option value="decrypt">Decrypt</option>
+        </select><br>
+
+        <input type="submit" value="Submit" class="button">
+    </form>
+
+    {% if result %}
+    <div class="result-container">
+        <h3>Result:</h3>
+        <p>{{ result }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<footer>
+    <p>Project by: Samer Saade - Charbel-Toumieh - Saadallah Itani - Ibrahim Harmoush</p>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const letterOnlyInputs = document.querySelectorAll('.letters-only');
+
+  letterOnlyInputs.forEach(input => {
+    input.addEventListener('keypress', function(event) {
+      const regex = /[a-zA-Z]/;
+      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+      if (!regex.test(key)) {
+        event.preventDefault();
+        return false;
+      }
+    });
+
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z]/g, '');
+    });
+  });
+});
+</script>
+</body>
+</html>
