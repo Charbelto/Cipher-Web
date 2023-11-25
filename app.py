@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import numpy as np
+from collections import Counter
 import numpy
 
 app = Flask(__name__)
@@ -204,6 +205,9 @@ def mod5(a):
 
 
 def encrypt(plaintext, table):
+    k = len(plaintext)
+    if k % 2 !=0:
+        plaintext = plaintext + "x"
     plaintext = plaintext.replace(" ", "")
     plaintext = plaintext.upper()
     ciphertext = ""
@@ -241,7 +245,7 @@ def encryptByPlayfairCipher(str, key):
 def decrypt(ciphertext, table):
     ciphertext = ciphertext.upper()
     plaintext = ""
-    
+
     for i in range(0, len(ciphertext)-1, 2):
         c1 = ciphertext[i]
         c2 = ciphertext[i+1]
@@ -368,20 +372,32 @@ def Inverse_mod26(det):
         if (det * i) % 26 == 1:
             return i
     return -1
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-def decrypt_hill(ciphertext, key, alphabet, dict2):
-    ciphertext = check_word(ciphertext)
-    key_inv = get_inverse_key(key)
-    ciphertext_list = [alphabet[c] for c in ciphertext]
-    ciphertext_mat = np.reshape(ciphertext_list, (-1, 3))
+def decrypt_hill(ciphertext, key, alphabet, dict22):
+    """
+    Decrypts ciphertext using the Hill cipher with a 3x3 matrix key.
+    :param ciphertext: string to decrypt
+    :param key: 3x3 matrix as a list of lists
+    :return: decrypted string
+    """
+    # Convert the key into a matrix and find its inverse modulo 26
+    key_matrix = Matrix(key)
+    key_matrix_inv = key_matrix.inv_mod(len(alphabet))
 
-    plain_mat = np.dot(key_inv, ciphertext_mat) % len(alphabet)
-    plain_text = ""
-    for row in plain_mat:
-        for val in row:
-            plain_text += dict2[int(round(val))]
+    # Convert ciphertext to numerical values
+    ciphertext_numbers = [alphabet.index(char) for char in ciphertext.upper()]
 
-    return plain_text
+    # Split the ciphertext into groups of 3
+    ciphertext_matrix = [ciphertext_numbers[i:i + 3] for i in range(0, len(ciphertext_numbers), 3)]
+
+    # Decrypt the ciphertext
+    decrypted_matrix = [key_matrix_inv * Matrix(group) % len(alphabet) for group in ciphertext_matrix]
+
+    # Convert the numerical values back to letters
+    decrypted_text = ''.join(''.join(alphabet[num] for num in group) for group in decrypted_matrix)
+
+    return decrypted_text
 
 # Monoalphabetic cipher functions
 def encrypt_monoalphabetic(plaintext, key, monoalpha_dict):
@@ -483,22 +499,23 @@ def decrypt_affine(ciphertext, a, b, alphabet):
     return dec
 
 def decrypt_affine2(ciphertext, a, b, alphabet):
-    d = {}
-    for elem in ciphertext:
-        if elem not in d:
-            d[elem] = 1
-        else:
-            d[elem] += 1
+    # Count the frequency of each letter in the ciphertext (excluding spaces)
+    letter_counts = Counter(char.lower() for char in ciphertext if char.isalpha())
 
-    filtered_keys = [key for key, value in d.items() if value > 1]
-    sorted_keys = sorted(filtered_keys, key=d.get, reverse=True)
-    letter_frequencies = ['e', 't', 'a', 'o', 'i', 'n', 's', 'h', 'r', 'd', 'l', 'c', 'u', 'm', 'f', 'w', 'y', 'g', 'p', 'b', 'v', 'k', 'j', 'x', 'q', 'z']
+    # Get the most common letters in the ciphertext
+    most_frequent_letters = [char for char, _ in letter_counts.most_common()]
 
-    decrypt_mapping = dict(zip(filtered_keys, letter_frequencies))
+    # Create a mapping from the most frequent letters to "etaoinsrhdlucmfywgpbvkjxqz"
+    decrypt_mapping = dict(zip(most_frequent_letters, "etaoinsrhdlucmfywgpbvkjxqz"))
+    print (most_frequent_letters)
 
+    # Decrypt the text using the mapping, preserving spaces
     decrypted_text = ""
-    for elem in ciphertext:
-        decrypted_text += decrypt_mapping.get(elem, elem)
+    for char in ciphertext:
+        if char.isalpha():
+            decrypted_text += decrypt_mapping.get(char.lower(), char.lower())
+        else:
+            decrypted_text += char
 
     return decrypted_text
 
