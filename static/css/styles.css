@@ -144,9 +144,9 @@ footer {
     margin: 5px;
     border: 1px solid #ccc;
 }
-
-
-  
+#matrixSize {
+    margin-bottom: -20px; /* Adjust this value to increase or decrease the space */
+  }
 @media (max-width: 600px) {
     .button-container {
         width: 100%;
