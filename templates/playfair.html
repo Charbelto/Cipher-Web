@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>Playfair Cipher</title>
-    <link rel="stylesheet" type="text/css" href="static/css/styles.css">
-    <link rel="icon" href="css/images/lock1.png" type="png">
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <link rel="icon" href="../static/images/lock1.png" type="png">
 
 </head>
 <body>
@@ -15,11 +15,11 @@
 <div class="main">
   <form method="POST" class="button-container">
     <label for="plaintext">Plaintext (letters only):</label>
-    <input type="text" id="plaintext" name="plaintext" class="letters-only" title="Letters only!" required><br>
-
+    <input type="text" id="plaintext" name="plaintext" class="letters-only" title="Letters only!" style="margin-bottom: -11px;" required><br>
+    <span class="warning" id="plaintextWarning" style="display: none; color: red;">Letters only, please.</span><br>
     <label for="key">Key:</label>
     <input type="text" id="key" name="key" class="letters-only" title="Letters only!" required><br>
-
+    <span class="warning" id="keyWarning" style="display: none; color: red;">Letters only, please.</span><br>
     <label for="operation">Operation:</label>
     <select id="operation" name="operation">
       <option value="encrypt">Encrypt</option>
@@ -42,24 +42,23 @@
 </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const letterOnlyInputs = document.querySelectorAll('.letters-only');
 
-  letterOnlyInputs.forEach(input => {
-    input.addEventListener('keypress', function(event) {
-      const regex = /[a-zA-Z]/;
-      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-      if (!regex.test(key)) {
-        event.preventDefault();
-        return false;
-      }
+    // Letters only fields with warning
+    const letterOnlyInputs = document.querySelectorAll('.letters-only');
+    letterOnlyInputs.forEach(input => {
+      const warningId = input.id + 'Warning'; // Assumes input has an id
+      input.addEventListener('input', function() {
+        // Check if the current value contains non-letter characters
+        if (this.value.match(/[^a-zA-Z]/)) {
+          // If there are non-letter characters, show the warning
+          document.getElementById(warningId).style.display = 'inline';
+        } else {
+          // If there are only letters, hide the warning
+          document.getElementById(warningId).style.display = 'none';
+        }
+      });
     });
 
-    input.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z]/g, '');
-    });
-  });
-});
 </script>
 </body>
 </html>

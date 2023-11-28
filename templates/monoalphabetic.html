@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Cipher Page</title>
-    <link rel="stylesheet" type="text/css" href="static/css/styles.css">
-    <link rel="icon" href="static/images/lock1.png" type="png">
+    <title>Mono-Alphabetic Cipher</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <link rel="icon" href="../static/images/lock1.png" type="png">
 </head>
 <body>
 
-  <header>
+<header>
     <h1>Mono-Alphabetic Cipher</h1>
 </header>
 
 <div class="main">
     <form method="POST" class="button-container">
-        <label for="plaintext">Plaintext (letters only):</label>
-        <input type="text" name="plaintext" id="plaintext" class="letters-only" required><br>
-
-        <label for="key">Key (26 letters):</label>
-        <input type="text" name="key" id="key" required pattern="[A-Za-z]{26}" title="Key must be 26 letters without repeating characters" class="letters-only"><br>
+      <label for="plaintext">Plaintext (letters only):</label>
+      <input type="text" name="plaintext" id="plaintext" class="letters-only" required>
+      <span class="warning" id="plaintextWarning" style="display: none; color: red;">Letters only, please.</span><br>
+      
+      <label for="key">Key (26 letters):</label>
+      <input type="text" name="key" id="key" class="letters-only" pattern="[A-Za-z]{26}" title="Key must be 26 letters without repeating characters" required>
+      <span class="warning" id="keyWarning" style="display: none; color: red;">Letters only, please.</span><br>
+        <small id="keyWarning" style="color: red; display: none;">Letters only, please.</small>
 
         <label for="operation">Operation:</label>
         <select name="operation" id="operation">
@@ -41,24 +44,23 @@
 </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const letterOnlyInputs = document.querySelectorAll('.letters-only');
-
-  letterOnlyInputs.forEach(input => {
-    input.addEventListener('keypress', function(event) {
-      const regex = /[a-zA-Z]/;
-      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-      if (!regex.test(key)) {
-        event.preventDefault();
-        return false;
-      }
-    });
-
-    input.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z]/g, '');
+  document.addEventListener('DOMContentLoaded', function() {
+    const letterOnlyInputs = document.querySelectorAll('.letters-only');
+  
+    letterOnlyInputs.forEach(input => {
+      input.addEventListener('input', function() {
+        // Check if the current value contains non-letter characters
+        if (this.value.match(/[^a-zA-Z]/)) {
+          // If there are non-letter characters, show the warning
+          this.nextElementSibling.style.display = 'block';
+        } else {
+          // If there are only letters, hide the warning
+          this.nextElementSibling.style.display = 'none';
+        }
+      });
     });
   });
-});
-</script>
+  </script>
+  
 </body>
 </html>

@@ -17,10 +17,11 @@
 
         
         <label for="plaintext">Enter plaintext:</label>
-        <input type="text" name="plaintext" id="plaintext" class="letters-only" required><br>
-        
+        <input type="text" name="plaintext" id="plaintext" class="letters-only" style="margin-bottom: -11px;" required><br>
+        <span class="warning" id="plaintextWarning" style="display: none; color: red;">Letters only, please.</span><br>
         <label for="key">Enter key:</label>
-        <input type="text" name="key" id="key" class="letters-only" required><br>
+        <input type="text" name="key" id="key" class="letters-only" style="margin-bottom: -11px;" required><br>
+        <span class="warning" id="keyWarning" style="display: none; color: red;">Letters only, please.</span><br>
         <label for="operation">Select operation:</label>
         <select name="operation" id="operation">
             <option value="encrypt">Encrypt</option>
@@ -43,6 +44,22 @@
     <p>Project by: Samer Saade - Charbel-Toumieh - Saadallah Itani - Ibrahim Harmoush</p>
 </footer>
     <script>
+ // Letters only fields with warning
+ const letterOnlyInputs = document.querySelectorAll('.letters-only');
+    letterOnlyInputs.forEach(input => {
+      const warningId = input.id + 'Warning'; // Assumes input has an id
+      input.addEventListener('input', function() {
+        // Check if the current value contains non-letter characters
+        if (this.value.match(/[^a-zA-Z]/)) {
+          // If there are non-letter characters, show the warning
+          document.getElementById(warningId).style.display = 'inline';
+        } else {
+          // If there are only letters, hide the warning
+          document.getElementById(warningId).style.display = 'none';
+        }
+      });
+    });
+
         document.getElementById('operation').addEventListener('change', function () {
             var selectedOperation = this.value;
             var submitButton = document.getElementById('submit');
@@ -73,24 +90,7 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-  const letterOnlyInputs = document.querySelectorAll('.letters-only');
-
-  letterOnlyInputs.forEach(input => {
-    input.addEventListener('keypress', function(event) {
-      const regex = /[a-zA-Z]/;
-      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-      if (!regex.test(key)) {
-        event.preventDefault();
-        return false;
-      }
-    });
-
-    input.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z]/g, '');
-    });
-  });
-});
+   
     </script>
 </body>
 </html>

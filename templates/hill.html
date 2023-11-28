@@ -2,39 +2,30 @@
 <html>
 <head>
     <title>Hill Cipher</title>
-    <link rel="icon" href="static/images/lock1.png" type="png">
-    <link rel="stylesheet" type="text/css" href="static/css/styles.css">
+    <link rel="icon" href="../static/images/lock1.png" type="png">
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
 </head>
-<body>
+<body>  
 
-  <header>
+<header>
     <h1>Hill Cipher</h1>
 </header>
 
-<div class="main" style="margin-top: -25px;" >
+<div class="main" style="margin-top: -45px;">
   <form method="POST" class="button-container">
-    <label>Matrix Elements (3x3):</label>
-    <table class="matrix-input">
-      <tr>
-        <td><input type="text" name="m11"></td>
-        <td><input type="text" name="m12"></td>
-        <td><input type="text" name="m13"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="m21"></td>
-        <td><input type="text" name="m22"></td>
-        <td><input type="text" name="m23"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="m31"></td>
-        <td><input type="text" name="m32"></td>
-        <td><input type="text" name="m33"></td>
-      </tr>
-    </table>
+    <label for="matrixSize">Matrix Size:</label>
+    <select name="matrixSize" id="matrixSize">
+      <option value="2">2x2</option>
+      <option value="3" selected>3x3</option> 
+    </select><br>
+
+    <div id="matrixInputs" class="matrix-input">
+      <!-- Matrix input fields will be generated here by JavaScript -->
+    </div>
 
     <label for="plaintext">Plaintext (letters only):</label>
-    <input type="text" name="plaintext" id="plaintext" required><br>
-
+    <input type="text" name="plaintext" id="plaintext" class="letters-only" style="margin-bottom: -15px;" required><br>
+    <span class="warning" id="plaintextWarning" style="display: none; color: red;">Letters only, please.</span><br>
     <label for="operation">Operation:</label>
     <select name="operation" id="operation">
       <option value="encrypt">Encrypt</option>
@@ -43,12 +34,11 @@
 
     <input type="submit" value="Submit" class="button">
   </form>
-
   {% if result %}
-    <div class="result-container">
-      <h3>Result:</h3> 
+  <div class="result-container">
+      <h3>Result:</h3>
       <p>{{ result }}</p>
-    </div>
+  </div>
   {% endif %}
 </div>
 
@@ -57,28 +47,47 @@
 </footer>
 
 <script>
-    document.querySelectorAll('.matrix-input input[type="text"]').forEach(input => {
-  input.addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, ''); // Only allow numbers
-  });
-});
+  
+    // Letters only fields with warning
+    const letterOnlyInputs = document.querySelectorAll('.letters-only');
+    letterOnlyInputs.forEach(input => {
+      const warningId = input.id + 'Warning'; // Assumes input has an id
+      input.addEventListener('input', function() {
+        // Check if the current value contains non-letter characters
+        if (this.value.match(/[^a-zA-Z]/)) {
+          // If there are non-letter characters, show the warning
+          document.getElementById(warningId).style.display = 'inline';
+        } else {
+          // If there are only letters, hide the warning
+          document.getElementById(warningId).style.display = 'none';
+        }
+      });
+    });
+  
 
-document.addEventListener('DOMContentLoaded', function() {
-  const plaintextInput = document.getElementById('plaintext');
-
-  plaintextInput.addEventListener('keypress', function(event) {
-    const regex = /[a-zA-Z]/;
-    const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-    if (!regex.test(key)) {
-      event.preventDefault();
-      return false;
+  // Function to generate matrix input fields
+  function generateMatrixInputs(matrixSize) {
+    const matrixInputsDiv = document.getElementById('matrixInputs');
+    matrixInputsDiv.innerHTML = ''; // Clear the current inputs
+    for (let i = 0; i < matrixSize; i++) {
+      const row = document.createElement('div');
+      for (let j = 0; j < matrixSize; j++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'm' + (i+1) + (j+1);
+        row.appendChild(input);
+      }
+      matrixInputsDiv.appendChild(row);
     }
+  }
+
+  // Event listener for matrix size change
+  document.getElementById('matrixSize').addEventListener('change', function() {
+    generateMatrixInputs(this.value);
   });
 
-  plaintextInput.addEventListener('input', function() {
-    this.value = this.value.replace(/[^a-zA-Z]/g, '');
-  });
-});
+  // Initialize with 3x3 matrix inputs on page load
+  generateMatrixInputs(3);
 </script>
 </body>
 </html>

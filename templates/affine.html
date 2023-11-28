@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Page Title</title>
-    <link rel="stylesheet" type="text/css" href="static/css/styles.css">
+    <title>Affine Cipher</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
     <link rel="icon" href="static/images/lock1.png" type="png">
 </head>
 <body>
@@ -15,9 +15,9 @@
 
 <div class="main" style="margin-top: -20px;">
     <form method="POST" class="button-container">
-        <label for="plaintext">Plaintext:</label>
-        <input type="text" name="plaintext" id="plaintext" class="letters-only" title="letters only!" required><br>
-        
+      <label for="plaintext">Plaintext (letters only):</label>
+      <input type="text" name="plaintext" id="plaintext" class="letters-only" title="letters only!" required>
+      <span class="warning" id="plaintextWarning" style="display: none; color: red;">Letters only, please.</span><br>
         <label for="a">a:</label>
         <input type="text" name="a" id="a" class="numbers-only" title="numbers only!" required><br>
         
@@ -48,45 +48,40 @@
 </footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-  const numberOnlyInputs = document.querySelectorAll('.numbers-only');
-
-  numberOnlyInputs.forEach(input => {
-    input.addEventListener('keypress', function(event) {
-      const regex = /[0-9]/;
-      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-      if (!regex.test(key)) {
-        event.preventDefault();
-        return false;
-      }
+  document.addEventListener('DOMContentLoaded', function() {
+    // Numbers only fields
+    const numberOnlyInputs = document.querySelectorAll('.numbers-only');
+    numberOnlyInputs.forEach(input => {
+      input.addEventListener('keypress', function(event) {
+        const regex = /[0-9]/;
+        const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+          event.preventDefault();
+          return false;
+        }
+      });
+  
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+      });
     });
-
-    input.addEventListener('input', function() {
-      this.value = this.value.replace(/[^0-9]/g, '');
-    });
-  });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  const letterOnlyInputs = document.querySelectorAll('.letters-only');
-
-  letterOnlyInputs.forEach(input => {
-    input.addEventListener('keypress', function(event) {
-      const regex = /[a-zA-Z]/;
-      const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-      if (!regex.test(key)) {
-        event.preventDefault();
-        return false;
-      }
-    });
-
-    input.addEventListener('input', function() {
-      this.value = this.value.replace(/[^a-zA-Z]/g, '');
+  
+    // Letters only fields with warning
+    const letterOnlyInputs = document.querySelectorAll('.letters-only');
+    letterOnlyInputs.forEach(input => {
+      const warningId = input.id + 'Warning'; // Assumes input has an id
+      input.addEventListener('input', function() {
+        // Check if the current value contains non-letter characters
+        if (this.value.match(/[^a-zA-Z]/)) {
+          // If there are non-letter characters, show the warning
+          document.getElementById(warningId).style.display = 'inline';
+        } else {
+          // If there are only letters, hide the warning
+          document.getElementById(warningId).style.display = 'none';
+        }
+      });
     });
   });
-});
-
-
-</script>
+  </script>
 </body>
 </html>
