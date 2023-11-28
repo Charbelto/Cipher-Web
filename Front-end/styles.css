@@ -105,6 +105,7 @@ select {
     background-color: #0056b3;
 }
 
+
 footer {
     background-color: #333;
     color: #fff;
@@ -128,7 +129,7 @@ footer {
     width: 4em; /* Adjust the width as necessary */
     text-align: center;
     padding: 5px;
-    margin: 5px;
+    margin: 4px;
     border: 1px solid #ccc;
 }
 

@@ -7,30 +7,21 @@
 </head>
 <body>
 
-  <header>
+<header>
     <h1>Hill Cipher</h1>
 </header>
 
-<div class="main" style="margin-top: -25px;" >
+<div class="main" style="margin-top: -25px;">
   <form method="POST" class="button-container">
-    <label>Matrix Elements (3x3):</label>
-    <table class="matrix-input">
-      <tr>
-        <td><input type="text" name="m11"></td>
-        <td><input type="text" name="m12"></td>
-        <td><input type="text" name="m13"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="m21"></td>
-        <td><input type="text" name="m22"></td>
-        <td><input type="text" name="m23"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="m31"></td>
-        <td><input type="text" name="m32"></td>
-        <td><input type="text" name="m33"></td>
-      </tr>
-    </table>
+    <label for="matrixSize">Matrix Size:</label>
+    <select name="matrixSize" id="matrixSize">
+      <option value="2">2x2</option>
+      <option value="3" selected>3x3</option> 
+    </select><br>
+
+    <div id="matrixInputs" class="matrix-input">
+      <!-- Matrix input fields will be generated here by JavaScript -->
+    </div>
 
     <label for="plaintext">Plaintext (letters only):</label>
     <input type="text" name="plaintext" id="plaintext" required><br>
@@ -43,13 +34,6 @@
 
     <input type="submit" value="Submit" class="button">
   </form>
-
-  {% if result %}
-    <div class="result-container">
-      <h3>Result:</h3> 
-      <p>{{ result }}</p>
-    </div>
-  {% endif %}
 </div>
 
 <footer>
@@ -57,28 +41,29 @@
 </footer>
 
 <script>
-    document.querySelectorAll('.matrix-input input[type="text"]').forEach(input => {
-  input.addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, ''); // Only allow numbers
-  });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  const plaintextInput = document.getElementById('plaintext');
-
-  plaintextInput.addEventListener('keypress', function(event) {
-    const regex = /[a-zA-Z]/;
-    const key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-    if (!regex.test(key)) {
-      event.preventDefault();
-      return false;
+  // Function to generate matrix input fields
+  function generateMatrixInputs(matrixSize) {
+    const matrixInputsDiv = document.getElementById('matrixInputs');
+    matrixInputsDiv.innerHTML = ''; // Clear the current inputs
+    for (let i = 0; i < matrixSize; i++) {
+      const row = document.createElement('div');
+      for (let j = 0; j < matrixSize; j++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'm' + (i+1) + (j+1);
+        row.appendChild(input);
+      }
+      matrixInputsDiv.appendChild(row);
     }
+  }
+
+  // Event listener for matrix size change
+  document.getElementById('matrixSize').addEventListener('change', function() {
+    generateMatrixInputs(this.value);
   });
 
-  plaintextInput.addEventListener('input', function() {
-    this.value = this.value.replace(/[^a-zA-Z]/g, '');
-  });
-});
+  // Initialize with 3x3 matrix inputs on page load
+  generateMatrixInputs(3);
 </script>
 </body>
 </html>
