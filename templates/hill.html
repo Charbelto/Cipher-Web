@@ -119,12 +119,10 @@
       }
       matrix.push(row);
     }
-  
-    if (!isMatrixInvertible(matrix)) {
-      document.getElementById('matrixWarning').style.display = 'inline';
-    } else {
-      document.getElementById('matrixWarning').style.display = 'none';
-    }
+
+    const isInvertible = isMatrixInvertible(matrix);
+    document.getElementById('matrixWarning').style.display = isInvertible ? 'none' : 'inline';
+    return isInvertible;
   }
 
   // Event listener for matrix size change and matrix input changes
@@ -133,6 +131,15 @@
     setTimeout(updateMatrix, 100); // Update matrix after generating new inputs
   });
   document.getElementById('matrixInputs').addEventListener('input', updateMatrix);
+
+  // Form submission event listener
+  document.querySelector('.button-container').addEventListener('submit', function(event) {
+    if (!updateMatrix()) {
+      // Prevent form submission if matrix is not invertible
+      event.preventDefault();
+      alert('Matrix is not invertible. Please enter a valid matrix.');
+    }
+  });
 
   // Initialize with 3x3 matrix inputs on page load
   generateMatrixInputs(3);
