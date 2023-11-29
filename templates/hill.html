@@ -23,6 +23,8 @@
       <!-- Matrix input fields will be generated here by JavaScript -->
     </div>
 
+    <span class="warning" id="matrixWarning" style="display: none; color: red;">Matrix is not invertible. Please enter a valid matrix.</span><br>
+
     <label for="plaintext">Plaintext (letters only):</label>
     <input type="text" name="plaintext" id="plaintext" class="letters-only" style="margin-bottom: -15px;" required><br>
     <span class="warning" id="plaintextWarning" style="display: none; color: red;">Letters only, please.</span><br>
@@ -47,23 +49,35 @@
 </footer>
 
 <script>
-  
-    // Letters only fields with warning
-    const letterOnlyInputs = document.querySelectorAll('.letters-only');
-    letterOnlyInputs.forEach(input => {
-      const warningId = input.id + 'Warning'; // Assumes input has an id
-      input.addEventListener('input', function() {
-        // Check if the current value contains non-letter characters
-        if (this.value.match(/[^a-zA-Z]/)) {
-          // If there are non-letter characters, show the warning
-          document.getElementById(warningId).style.display = 'inline';
-        } else {
-          // If there are only letters, hide the warning
-          document.getElementById(warningId).style.display = 'none';
-        }
-      });
+  // Letters only fields with warning
+  const letterOnlyInputs = document.querySelectorAll('.letters-only');
+  letterOnlyInputs.forEach(input => {
+    const warningId = input.id + 'Warning'; // Assumes input has an id
+    input.addEventListener('input', function() {
+      // Check if the current value contains non-letter characters
+      if (this.value.match(/[^a-zA-Z]/)) {
+        // If there are non-letter characters, show the warning
+        document.getElementById(warningId).style.display = 'inline';
+      } else {
+        // If there are only letters, hide the warning
+        document.getElementById(warningId).style.display = 'none';
+      }
     });
-  
+  });
+
+  // Function to calculate the determinant of a 2x2 matrix
+  function determinant2x2(matrix) {
+    return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+  }
+
+  // Function to calculate the determinant of a 3x3 matrix
+  function determinant3x3(matrix) {
+    let det = 0;
+    for (let i = 0; i < 3; i++) {
+      det += matrix[0][i] * (matrix[1][(i+1)%3] * matrix[2][(i+2)%3] - matrix[1][(i+2)%3] * matrix[2][(i+1)%3]);
+    }
+    return det;
+  }
 
   // Function to generate matrix input fields
   function generateMatrixInputs(matrixSize) {
@@ -81,10 +95,44 @@
     }
   }
 
-  // Event listener for matrix size change
+  // Function to check if the matrix is invertible
+  function isMatrixInvertible(matrix) {
+    const matrixSize = matrix.length;
+    let det = 0;
+    if (matrixSize === 2) {
+      det = determinant2x2(matrix);
+    } else if (matrixSize === 3) {
+      det = determinant3x3(matrix);
+    }
+    return det !== 0;
+  }
+
+  // Function to update the matrix and check if it's invertible
+  function updateMatrix() {
+    const matrixSize = parseInt(document.getElementById('matrixSize').value);
+    const matrix = [];
+    for (let i = 0; i < matrixSize; i++) {
+      const row = [];
+      for (let j = 0; j < matrixSize; j++) {
+        const input = document.querySelector(`input[name='m${i+1}${j+1}']`);
+        row.push(parseInt(input.value) || 0);
+      }
+      matrix.push(row);
+    }
+  
+    if (!isMatrixInvertible(matrix)) {
+      document.getElementById('matrixWarning').style.display = 'inline';
+    } else {
+      document.getElementById('matrixWarning').style.display = 'none';
+    }
+  }
+
+  // Event listener for matrix size change and matrix input changes
   document.getElementById('matrixSize').addEventListener('change', function() {
     generateMatrixInputs(this.value);
+    setTimeout(updateMatrix, 100); // Update matrix after generating new inputs
   });
+  document.getElementById('matrixInputs').addEventListener('input', updateMatrix);
 
   // Initialize with 3x3 matrix inputs on page load
   generateMatrixInputs(3);
